@@ -34,10 +34,10 @@ jobs:
           # smali 2.5.2 + deps
           M=https://repo1.maven.org/maven2
           cd "$T/smali"
-          curl -fsSL -O "$M/com/android/tools/smali/smali/2.5.2/smali-2.5.2.jar"
-          curl -fsSL -O "$M/com/android/tools/smali/baksmali/2.5.2/baksmali-2.5.2.jar"
-          curl -fsSL -O "$M/com/android/tools/smali/dexlib2/2.5.2/dexlib2-2.5.2.jar"
-          curl -fsSL -O "$M/com/android/tools/smali/util/2.5.2/util-2.5.2.jar"
+          curl -fsSL -O "$M/org/smali/smali/2.5.2/smali-2.5.2.jar"
+          curl -fsSL -O "$M/org/smali/baksmali/2.5.2/baksmali-2.5.2.jar"
+          curl -fsSL -O "$M/org/smali/dexlib2/2.5.2/dexlib2-2.5.2.jar"
+          curl -fsSL -O "$M/org/smali/util/2.5.2/util-2.5.2.jar"
           curl -fsSL -O "$M/com/google/guava/guava/25.1-android/guava-25.1-android.jar"
           curl -fsSL -O "$M/com/beust/jcommander/1.72/jcommander-1.72.jar"
           curl -fsSL -O "$M/commons-cli/commons-cli/1.4/commons-cli-1.4.jar"
