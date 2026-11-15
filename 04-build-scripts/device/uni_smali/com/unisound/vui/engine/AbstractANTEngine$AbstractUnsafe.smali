@@ -533,7 +533,8 @@
 
     iget-object v0, p0, Lcom/unisound/vui/engine/AbstractANTEngine$AbstractUnsafe;->this$0:Lcom/unisound/vui/engine/AbstractANTEngine;
 
-    invoke-virtual {v0, p1, p2}, Lcom/unisound/vui/engine/AbstractANTEngine;->setWakeupWord0(Ljava/util/List;Z)V
+    # ★ R1-wakeup-fix: 跳过 setWakeupWord0（避免生成模板FST），让 USC 用原厂 assets/wakeup/data
+    nop
     :try_end_12
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_12} :catch_13
 
