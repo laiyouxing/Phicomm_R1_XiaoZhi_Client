@@ -1,0 +1,73 @@
+name: Build V2.0.5 (wakeup fix)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '04-build-scripts/device/uni_smali/com/unisound/vui/util/UserPerferenceUtil.smali'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Prepare tools
+        run: |
+          set -euo pipefail
+          T="$RUNNER_TEMP/r1tools"
+          mkdir -p "$T/smali"
+          echo "T=$T"
+          # android.jar (API 22)
+          curl -fsSL -o "$T/android.jar" "https://raw.githubusercontent.com/Sable/android-platforms/master/android-22/android.jar"
+          ls -l "$T/android.jar"
+          # r8 (fat jar)
+          curl -fsSL -o "$T/r8.jar" "https://maven.google.com/com/android/tools/r8/8.3.37/r8-8.3.37.jar"
+          ls -l "$T/r8.jar"
+          # smali 2.5.2 + deps
+          M=https://repo1.maven.org/maven2
+          cd "$T/smali"
+          curl -fsSL -O "$M/com/android/tools/smali/smali/2.5.2/smali-2.5.2.jar"
+          curl -fsSL -O "$M/com/android/tools/smali/baksmali/2.5.2/baksmali-2.5.2.jar"
+          curl -fsSL -O "$M/com/android/tools/smali/dexlib2/2.5.2/dexlib2-2.5.2.jar"
+          curl -fsSL -O "$M/com/android/tools/smali/util/2.5.2/util-2.5.2.jar"
+          curl -fsSL -O "$M/com/google/guava/guava/25.1-android/guava-25.1-android.jar"
+          curl -fsSL -O "$M/com/beust/jcommander/1.72/jcommander-1.72.jar"
+          curl -fsSL -O "$M/commons-cli/commons-cli/1.4/commons-cli-1.4.jar"
+          curl -fsSL -O "$M/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2.jar"
+          ls -l
+
+      - name: Build
+        env:
+          R1_TOOLS: ${{ runner.temp }}/r1tools
+        run: |
+          set -euo pipefail
+          cd 04-build-scripts/device
+          bash build_rel_V205.sh 2>&1 | tee /tmp/build.log
+          echo "=== artifacts ==="
+          ls -lh *.apk || true
+
+      - name: Upload APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r1-client-wakeup-fix
+          path: |
+            04-build-scripts/device/*.apk
+            04-build-scripts/device/_stale/*.apk
+          if-no-files-found: warn
+
+      - name: Build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: /tmp/build.log
+          if-no-files-found: warn
