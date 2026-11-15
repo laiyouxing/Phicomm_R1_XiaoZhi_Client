@@ -572,7 +572,7 @@
 
     invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
 
-    const-string v0, "\u4f60\u597d\u9b54\u65b9"
+    const-string v0, "\u5c0f\u8baf\u5c0f\u8baf"
 
     invoke-interface {v1, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
@@ -902,7 +902,7 @@
 
     invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
 
-    const-string v0, "\u4f60\u597d\u9b54\u65b9"
+    const-string v0, "\u5c0f\u8baf\u5c0f\u8baf"
 
     invoke-interface {v1, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
