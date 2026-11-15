@@ -564,7 +564,7 @@
     .end annotation
 
     .prologue
-    # jp2 v1.3.71: factory wakeup word hard-wired to "小智小智".
+    # jp2 v1.3.71: factory wakeup word — PATCHED to "你好魔方" (matches stock acoustic model).
     #   was: R.array.default_wakeup_words (小讯小讯/交接手续) / SP main_wakeup_word.
     #   cannot patch resources.arsc: it is inside the v1 signature, and Janus
     #   replacement depends on that signature staying valid.
@@ -572,7 +572,7 @@
 
     invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
 
-    const-string v0, "\u5c0f\u667a\u5c0f\u667a"
+    const-string v0, "\u4f60\u597d\u9b54\u65b9"
 
     invoke-interface {v1, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
@@ -894,7 +894,7 @@
     .end annotation
 
     .prologue
-    # jp2 v1.3.71: factory wakeup word hard-wired to "小智小智".
+    # jp2 v1.3.71: factory wakeup word — PATCHED to "你好魔方" (matches stock acoustic model).
     #   was: R.array.default_wakeup_words (小讯小讯/交接手续) / SP main_wakeup_word.
     #   cannot patch resources.arsc: it is inside the v1 signature, and Janus
     #   replacement depends on that signature staying valid.
@@ -902,7 +902,7 @@
 
     invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
 
-    const-string v0, "\u5c0f\u667a\u5c0f\u667a"
+    const-string v0, "\u4f60\u597d\u9b54\u65b9"
 
     invoke-interface {v1, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
