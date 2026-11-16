@@ -57,7 +57,7 @@ public final class XzBootstrap {
      * false = 用自建 sherpa KWS + 常驻麦（会盖掉原厂 KWS，播歌时唤不醒）。
      * 想回到自建 KWS 改这个常量即可（代码与旗标注入逻辑都还在）。
      */
-    private static final boolean USC_KWS_ONLY = true;
+    private static final boolean USC_KWS_ONLY = false;  // ★ R1-fix: 启用自建 sherpa KWS（原厂 USC KWS 已失效）
 
     private static AudioCapture mic;
     private static SessionController session;
