@@ -49,6 +49,8 @@ public final class VoicePower {
     private static volatile Object sEngine;
     private static volatile boolean sHaveEngine;
     private static volatile boolean sOff;
+    /** ★ R1-fix：自建 KWS 接管麦克风期间为 true ⇒ 拦掉原厂 enterWakeup，防止 USC 抢回麦。 */
+    private static volatile boolean kwsOwnsMic = false;
     /** 最近一次动作的结果（web 上直接看） */
     private static volatile String sLast = "-";
     private static volatile long sChangedMs;
@@ -75,12 +77,12 @@ public final class VoicePower {
 
     /** smali：NativeANTEngine.doStopWakeup —— 省电态才允许走原厂「停唤醒」。 */
     public static boolean allowStopWakeup() {
-        return sOff;
+        return sOff || kwsOwnsMic;
     }
 
     /** smali：NativeANTEngine.doEnterWakeup —— 省电态拦掉原厂「进唤醒」。 */
     public static boolean blockEnterWakeup() {
-        return sOff;
+        return sOff || kwsOwnsMic;
     }
 
     // ---------------- 对外 ----------------
@@ -261,7 +263,8 @@ public final class VoicePower {
         }
         sb.append(" cancelASR=").append(invoke(e, "cancelASR"));
         sb.append(" releaseAudioRecord=").append(invoke(e, "releaseAudioRecord"));
-        SessionLog.i("kws mic handover: " + sb);
+        kwsOwnsMic = true;   // 从此拦掉原厂 enterWakeup，别让它把麦抢回去
+        SessionLog.i("kws mic handover: " + sb + " (kwsOwnsMic=true)");
         return sb.toString();
     }
 
