@@ -228,6 +228,33 @@ public final class VoicePower {
         return sb.toString();
     }
 
+    /**
+     * ★ R1-fix：只为自建 sherpa KWS「让出麦克风」—— 停掉 USC 的唤醒/录音线程，
+     * 但**不设置省电旗标、不 dropWs、不停我们的 KWS**。
+     *
+     * 背景：原厂 USC 的 usc_record_thre 独占 card1，导致寄生层的 AudioRecord 一帧读不到
+     * （kwsdump 恒 0）。而走 voice_off 省电路径会把 KWS/收音 一起停掉且触发 ws drop 循环。
+     * 这里只做 stopVoice 里那四步释放动作，其余状态不动。
+     */
+    public static String releaseMicForKws() {
+        Object e = sEngine;
+        if (e == null) {
+            return "engine=null(还没拿到实例)";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("stopWakeup=").append(invoke(e, "stopWakeup"));
+        Object j = field(e, "j");
+        if (j != null) {
+            sb.append(" j.b=").append(invoke(j, "b"));
+        } else {
+            sb.append(" j=?");
+        }
+        sb.append(" cancelASR=").append(invoke(e, "cancelASR"));
+        sb.append(" releaseAudioRecord=").append(invoke(e, "releaseAudioRecord"));
+        SessionLog.i("kws mic handover: " + sb);
+        return sb.toString();
+    }
+
     /** 起：恢复原厂唤醒。 */
     private static String startVoice(String why) {
         Object e = sEngine;
