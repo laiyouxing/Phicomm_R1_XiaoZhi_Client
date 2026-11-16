@@ -857,14 +857,10 @@ public final class XzBootstrap {
                 try {
                     injectNativeLibDir(r1LibDir);
                     injectAssets(r1Apk);
-                    // ★ R1-fix：原厂 USC 独占 card1，寄生层 AudioRecord 读不到任何帧。
-                    // 这里让它把麦克风交出来（只释放，不进省电模式、不断 WS）。
-                    try {
-                        SessionLog.i("kws mic handover <- " + VoicePower.releaseMicForKws());
-                    } catch (Throwable t) {
-                        SessionLog.i("kws mic handover FAILED: " + t);
-                    }
-                    Thread.sleep(600);   // 等 HAL 真正 close，避免 AudioRecord 抢不到
+                    // ★ R1-fix v2：按作者原设计 —— 不要抢麦，搭 USC 的车（UscTap）。
+                    //   USC 必须正常工作才会持续 readData（smali 补丁把它复制到 UscTap）。
+                    //   之前把 USC 停掉会导致 HAL 休眠，两边都拿不到音频。
+                    SessionLog.i("kws: riding on USC tap (no mic handover)");
                     kws = new KwsEngine(app, new KwsEngine.OnKeyword() {
                         public void onKeyword(final String kw) {
                             h.post(new Runnable() {
