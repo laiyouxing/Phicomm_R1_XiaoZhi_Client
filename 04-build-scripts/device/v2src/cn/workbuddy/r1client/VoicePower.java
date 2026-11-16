@@ -77,12 +77,12 @@ public final class VoicePower {
 
     /** smali：NativeANTEngine.doStopWakeup —— 省电态才允许走原厂「停唤醒」。 */
     public static boolean allowStopWakeup() {
-        return sOff || kwsOwnsMic;
+        return sOff;
     }
 
     /** smali：NativeANTEngine.doEnterWakeup —— 省电态拦掉原厂「进唤醒」。 */
     public static boolean blockEnterWakeup() {
-        return sOff || kwsOwnsMic;
+        return sOff;
     }
 
     // ---------------- 对外 ----------------
@@ -263,7 +263,7 @@ public final class VoicePower {
         }
         sb.append(" cancelASR=").append(invoke(e, "cancelASR"));
         sb.append(" releaseAudioRecord=").append(invoke(e, "releaseAudioRecord"));
-        kwsOwnsMic = true;   // 从此拦掉原厂 enterWakeup，别让它把麦抢回去
+        // 不设 kwsOwnsMic：让 USC 保持正常，UscTap 才能持续拿到音频
         SessionLog.i("kws mic handover: " + sb + " (kwsOwnsMic=true)");
         return sb.toString();
     }
