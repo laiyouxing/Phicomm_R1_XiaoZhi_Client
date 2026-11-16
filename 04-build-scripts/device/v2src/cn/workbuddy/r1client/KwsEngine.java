@@ -141,7 +141,7 @@ public final class KwsEngine {
      * 「模型到底给这段音频打了多少分」—— 直接分辨「模型看不见信号」还是
      * 「看见了但阈值卡住」。文件上限 20MB（≈10 分钟 @16k mono）后自动停写。
      */
-    public static volatile boolean dumpEnabled = false;
+    public static volatile boolean dumpEnabled = true;  // ★ R1-diag: 录下喂进KWS的PCM用于定性
 
     /** 软限幅拐点：|v|<=KNEE 完全线性（无损），超过后 tanh 平滑压向 ±1，避免硬削顶的谐波污染。 */
     private static final float KNEE = 0.8f;
