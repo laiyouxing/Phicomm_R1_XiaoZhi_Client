@@ -857,6 +857,14 @@ public final class XzBootstrap {
                 try {
                     injectNativeLibDir(r1LibDir);
                     injectAssets(r1Apk);
+                    // ★ R1-fix：原厂 USC 独占 card1，寄生层 AudioRecord 读不到任何帧。
+                    // 这里让它把麦克风交出来（只释放，不进省电模式、不断 WS）。
+                    try {
+                        SessionLog.i("kws mic handover <- " + VoicePower.releaseMicForKws());
+                    } catch (Throwable t) {
+                        SessionLog.i("kws mic handover FAILED: " + t);
+                    }
+                    Thread.sleep(600);   // 等 HAL 真正 close，避免 AudioRecord 抢不到
                     kws = new KwsEngine(app, new KwsEngine.OnKeyword() {
                         public void onKeyword(final String kw) {
                             h.post(new Runnable() {
