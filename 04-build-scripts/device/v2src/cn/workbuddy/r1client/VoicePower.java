@@ -135,6 +135,27 @@ public final class VoicePower {
         return s;
     }
 
+    /**
+     * ★ R1-fix：让原厂 USC 进入唤醒态 —— 只有它进入唤醒态才会持续 readData()，
+     * 而 smali 补丁是在 readData 里把 PCM 复制给 UscTap 的。所以自建 KWS 要搭车，
+     * 前提是 USC 自己在跑。不设置任何省电旗标，纯粹启动引擎。
+     */
+    public static String startVoiceForTap() {
+        long t0 = System.currentTimeMillis();
+        while (sEngine == null && System.currentTimeMillis() - t0 < 12000L) {
+            try { Thread.sleep(200L); } catch (InterruptedException ie) { break; }
+        }
+        if (sEngine == null) {
+            SessionLog.i("usc enterWakeup: engine=null after "
+                    + (System.currentTimeMillis() - t0) + "ms");
+            return "engine=null(timeout)";
+        }
+        String r = startVoice("kws-tap");
+        SessionLog.i("usc enterWakeup(for tap): " + r
+                + " (engine ready after " + (System.currentTimeMillis() - t0) + "ms)");
+        return r;
+    }
+
     /** web / 日志用的一句话状态。 */
     public static String state() {
         return "voice=" + (sOff ? "OFF(省电)" : "ON(正常)")
