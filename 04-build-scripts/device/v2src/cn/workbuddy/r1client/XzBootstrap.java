@@ -861,6 +861,12 @@ public final class XzBootstrap {
                     //   USC 必须正常工作才会持续 readData（smali 补丁把它复制到 UscTap）。
                     //   之前把 USC 停掉会导致 HAL 休眠，两边都拿不到音频。
                     SessionLog.i("kws: riding on USC tap (no mic handover)");
+                    // ★ 搭车前提：USC 必须在唤醒态才会持续 readData -> UscTap 才有数据。
+                    try {
+                        SessionLog.i("kws tap: " + VoicePower.startVoiceForTap());
+                    } catch (Throwable t) {
+                        SessionLog.i("kws tap startVoice FAILED: " + t);
+                    }
                     kws = new KwsEngine(app, new KwsEngine.OnKeyword() {
                         public void onKeyword(final String kw) {
                             h.post(new Runnable() {
