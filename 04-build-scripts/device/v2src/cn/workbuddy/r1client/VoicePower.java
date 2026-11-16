@@ -237,10 +237,20 @@ public final class VoicePower {
      * 这里只做 stopVoice 里那四步释放动作，其余状态不动。
      */
     public static String releaseMicForKws() {
+        // ★ USC 引擎由 smali 的 SpeechManager.<init> 异步送来（noteEngine），
+        //   而 KWS 初始化更早 —— 这里必须等它到手，否则交接静默失败。
+        long t0 = System.currentTimeMillis();
+        while (sEngine == null && System.currentTimeMillis() - t0 < 12000L) {
+            try { Thread.sleep(200L); } catch (InterruptedException ie) { break; }
+        }
         Object e = sEngine;
         if (e == null) {
-            return "engine=null(还没拿到实例)";
+            SessionLog.i("kws mic handover: engine=null after "
+                    + (System.currentTimeMillis() - t0) + "ms, give up");
+            return "engine=null(timeout)";
         }
+        SessionLog.i("kws mic handover: engine ready after "
+                + (System.currentTimeMillis() - t0) + "ms");
         StringBuilder sb = new StringBuilder();
         sb.append("stopWakeup=").append(invoke(e, "stopWakeup"));
         Object j = field(e, "j");
